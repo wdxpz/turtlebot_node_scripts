@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch">
+  <arg name="multi_robot_name" value="$(env ROS_NAMESPACE)" />
+  <arg name="set_lidar_frame_id" value="$(env ROS_NAMESPACE)/base_scan" />
+  </include>
+</launch>

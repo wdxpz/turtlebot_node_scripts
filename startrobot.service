@@ -1,0 +1,13 @@
+# THIS IS A GENERATED FILE, NOT RECOMMENDED TO EDIT.
+
+[Unit]
+Description="bringup startrobot"
+After=network.target
+
+[Service]
+Type=idle
+ExecStartPre=/bin/sleep 60
+ExecStart=/usr/sbin/startrobot-start
+
+[Install]
+WantedBy=multi-user.target

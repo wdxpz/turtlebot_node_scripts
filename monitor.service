@@ -1,0 +1,13 @@
+# THIS IS A GENERATED FILE, NOT RECOMMENDED TO EDIT.
+
+[Unit]
+Description="monitor startrobot"
+After=network.target
+Wants=startrobot.service
+
+[Service]
+Type=idle
+ExecStart=/home/waffle/logs/monitor.sh
+
+[Install]
+WantedBy=multi-user.target
