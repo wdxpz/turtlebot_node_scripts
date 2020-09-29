@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+ <launch>
+   <include file="$(find launch_rosbot)/launch/start_namesapce.launch">          
+     <arg name="robot_namespace" value="$(env ROS_NAME)" />
+     <!--<arg name="robot_namespace" value="a" />-->
+   </include>
+ </launch>

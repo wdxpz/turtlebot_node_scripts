@@ -99,7 +99,7 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
        </include>
      </launch>
      ```
-
+    
      **NOTE: it is crisis to set ROS_NAMESPACE in /usr/sbin/start_robot-start**
 
    2. create robot_upstart job
@@ -108,11 +108,13 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
      $ rosrun robot_upstart install launch_robot/launch/launch_robot_with_name.launch --job startrobot --user waffle --interface wlan0 --master http://192.168.3.89:11311 --logdir /home/waffle/logs --symlink
      ```
 
-     
+
+​     
 
    3. `sudo nano /usr/sbin/startrobot-start`
-     see [startrobot-start](startrobot-start)
 
+     see [startrobot-start](startrobot-start)
+    
      ```
      #add or modify after:
      export ROS_MASTER_URI=http://192.168.3.89:11311
@@ -134,12 +136,12 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
      [Unit]
      Description="bringup startrobot"
      After=network.target
-
+    
      [Service]
      Type=idle
      ExecStartPre=/bin/sleep 60 
      ExecStart=/usr/sbin/startrobot-start
-
+    
      [Install]
      WantedBy=multi-user.target
      ```
@@ -147,13 +149,13 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
    5. sudo systemctl daemon-reload && sudo systemctl start startrobot`
 
 ### make monitor service to reboot startrobot service if failed
-   
+
    1. create or copy [monitor scripts](monitor.sh)
 
    2. create or copy [monitor.service](monitor.service)
 
    3. enalbe and start it
-   
+
    ```
    cp monitor.service /lib/systemd/system/monitor.service
    sudo systemctl daemon-reload
@@ -161,7 +163,88 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
    sudo systemctl start monitor.service
    ```
 
-## monitor service ouput
+### monitor service ouput
 ```
 sudo journalctl -e -u monitor.service
 ```
+## auto launch each rosbot node by robot_startup rospackage
+### make startrobot service
+   1. create  or copy ros project `launch_robot` under `~/ros_workspace/src/`
+
+     ```
+     catkin_create_pkg launch_rosbot
+     mkdir launch
+     cd launch
+     cp repository/ros_workspace/src/launch_rosbot_with_name.launch .
+     cp repository/ros_workspace/src/launchstart_namesapce.launch .
+     
+     #launch_rosbot_with_name.launch
+    <?xml version="1.0"?>
+     <launch>
+       <include file="$(find launch_rosbot)/launch/start_namesapce.launch">          
+         <arg name="robot_namespace" value="$(env ROS_NAME)" />
+         <!--<arg name="robot_namespace" value="a" />-->
+       </include>
+     </launch>
+    
+     **NOTE: it is crisis to set ROS_NAME in /usr/sbin/start_robot-start**, not ROS_NAMESPACE like in turtlebot, otherwise those nodes'name will start with '/rosbobt1/rosbot1/...'
+
+   2. create robot_upstart job
+
+     ```
+     $ rosrun robot_upstart install launch_rosbot/launch/launch_rosbot_with_name.launch --job startrobot --user husarion --interface wlan0 --master http://192.168.3.89:11311 --logdir /home/husarion/logs --symlink
+     ```
+
+
+​     
+
+   3. `sudo nano /usr/sbin/startrobot-start`
+
+      see [startrobot-start.rosbot](startrobot-start.rosbot)
+
+    #add or modify after:
+    log_path="/home/husarion/logs"
+    
+    export ROS_IP=`rosrun robot_upstart getifip wlx70f11c32f38a`
+    
+    export ROS_MASTER_URI=http://192.168.3.118:11311
+    export ROS_HOME=${ROS_HOME:=$(echo ~husarion)/.ros}
+    export ROS_LOG_DIR=$log_path
+    export ROS_HOSTNAME=192.168.3.154
+    export ROS_NAME="rosbot1" ###remember not ROS_NAMESPACE
+    export ROS_IP=192.168.3.154
+    chmod 666 /dev/ttyS4 ###critical to open the access right
+    
+     
+     #add para --wait in the line:
+     # Punch it.
+     setuidgid waffle roslaunch --wait &LAUNCH_FILENAME &
+     PID=$!
+     ```
+
+   4. `sudo nano /lib/systemd/system/startrobot.service`
+
+      see [startrobot.service.rosbot](startrobot.service.rosbot)
+
+    [Unit]
+    Description="bringup startrobot"
+    After=network.target
+    
+    [Service]
+    Type=idle
+    ExecStartPre=/bin/sleep 10
+    ExecStart=/usr/sbin/startrobot-start
+    
+    [Install]
+    WantedBy=multi-user.target
+
+   5. sudo systemctl daemon-reload && sudo systemctl start startrobot`
+
+### stop lipradar motor
+
+```
+rosservice call /rosbot1/stop_motor
+```
+
+
+
