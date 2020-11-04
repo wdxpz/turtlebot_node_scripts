@@ -173,30 +173,26 @@ sudo journalctl -e -u monitor.service
 
      ```
      catkin_create_pkg launch_rosbot
-     mkdir launch
-     cd launch
-     cp repository/ros_workspace/src/launch_rosbot_with_name.launch .
-     cp repository/ros_workspace/src/launchstart_namesapce.launch .
+     roscd launch_rosbot
+     cp -r repository/launch_rosbot/* .
      
      #launch_rosbot_with_name.launch
     <?xml version="1.0"?>
      <launch>
        <include file="$(find launch_rosbot)/launch/start_namesapce.launch">          
-         <arg name="robot_namespace" value="$(env ROS_NAME)" />
-         <!--<arg name="robot_namespace" value="a" />-->
+         <arg name="robot_namespace" value="rosbot1" />
        </include>
      </launch>
+     ```
     
-     **NOTE: it is crisis to set ROS_NAME in /usr/sbin/start_robot-start**, not ROS_NAMESPACE like in turtlebot, otherwise those nodes'name will start with '/rosbobt1/rosbot1/...'
+     **NOTE: no need to set ROS_NAME in /usr/sbin/start_robot-start**
+     **NOTE: by this luanch_rosbot_with_name.launch, lidar, amcl and movebase will be launched locally. In robotcontroller service at master node side, only need to start map_server, like start_rosbot_only_map.launch** 
 
    2. create robot_upstart job
 
      ```
      $ rosrun robot_upstart install launch_rosbot/launch/launch_rosbot_with_name.launch --job startrobot --user husarion --interface wlan0 --master http://192.168.3.89:11311 --logdir /home/husarion/logs --symlink
      ```
-
-
-​     
 
    3. `sudo nano /usr/sbin/startrobot-start`
 
@@ -211,7 +207,7 @@ sudo journalctl -e -u monitor.service
     export ROS_HOME=${ROS_HOME:=$(echo ~husarion)/.ros}
     export ROS_LOG_DIR=$log_path
     export ROS_HOSTNAME=192.168.3.154
-    export ROS_NAME="rosbot1" ###remember not ROS_NAMESPACE
+    #export ROS_NAME="rosbot1" ###remember not ROS_NAMESPACE
     export ROS_IP=192.168.3.154
     chmod 666 /dev/ttyS4 ###critical to open the access right
     
