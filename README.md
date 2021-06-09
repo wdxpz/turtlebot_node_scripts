@@ -1,3 +1,10 @@
+# directory structure
+```
+catkin_ws -- ros projects for turtlebot
+ros_worksapce -- ros project for rosbot
+
+```
+
 # 1. Launch single robot at boot on turtlebot node
 
 ## Preparation: update firewaree and software on turtlebot
@@ -236,7 +243,47 @@ sudo journalctl -e -u monitor.service
 
    5. sudo systemctl daemon-reload && sudo systemctl start startrobot`
 
-### stop lipradar motor
+#### launch rosbot
+
+#### launch slam
+```
+roslaunch multi_rosbot_nav slam.launch
+#### slam.launch - slam rviz, teleop
+
+roslaunch multi_rosbot_nav slam_norvz.launch
+roslaunch tele.launch
+####slam_norva.launch - slam, no rviz, no teleop
+```
+
+#### launch navigation
+
+1. launch local model with map server
+```
+roslaunch multi_rosbot_nav nav_rosbot1.launch
+```
+
+2. launch mulit-nodes mode
+    2.1 **at master node 192.168.28.11 (need catkin_make in ~/catkin_ws to make the multirobot_nv in ~/catkin_make/src )**
+```
+roscore
+roslaunch multirobot_nv start_rosbot_only_map.launch  
+```
+    2.2 at robot mode
+```
+roslaunch launch_rosbot launch_rosbot_with_name.launch
+```
+
+3. validate
+    3.1 check the tf tree
+```
+rosrun tf view_frames
+```
+    3.2 check the map location
+```
+python ~/projects/multisense/rosbot2/locate.py
+```
+
+    3.3  stop lipradar motor
 
 ```
 rosservice call /rosbot1/stop_motor
