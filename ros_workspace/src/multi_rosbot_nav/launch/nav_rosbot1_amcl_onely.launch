@@ -42,6 +42,6 @@
 	<node pkg="tf" type="static_transform_publisher" name="laser_broadcaster" args="0 0 0 3.14 0 0 rosbot1/base_link rosbot1/laser 100" />
 	</group>
 
-    <include file="$(find multi_rosbot_nav)/launch/move_base_rosbot1.launch" />
+    <!--<include file="$(find multi_rosbot_nav)/launch/move_base_rosbot1.launch" />-->
     <include file="$(find multi_rosbot_nav)/launch/amcl_only_rosbot1.launch" />
 </launch>

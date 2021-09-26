@@ -38,6 +38,13 @@
     <param name="local_costmap/laser_scan_sensor/topic" value="$(arg laser_topic)"/>
     add by ws-->
 
+    <!-- configuration of path planner -->
+    <!--<rosparam file="$(find multi_rosbot_nav)/config/dwa_local_planner_params.yaml" command="load" />-->
+    <rosparam file="$(find multi_rosbot_nav)/config/global_planner_params.yaml" command="load" />
+
+    <!--<param name="base_global_planner" value="navfn/NavfnROS" />-->
+    <!--<param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />-->
+    <!-- configuration of path planner -->
 
     <remap from="cmd_vel" to="/rosbot1/cmd_vel"/>
     <remap from="odom" to="$(arg odom_topic)"/>
