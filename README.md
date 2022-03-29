@@ -175,7 +175,8 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
 ```
 sudo journalctl -e -u monitor.service
 ```
-### 2.2 auto launch each rosbot node by robot_startup rospackage
+## 2.2 rosbot
+### auto launch each rosbot node by robot_startup rospackage
 #### install robot-upstart pakcage in Melodic
 ```
 sudo apt-get install ros-melodic-robot-upstart
