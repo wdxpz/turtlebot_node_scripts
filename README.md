@@ -72,9 +72,10 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
 
 # 2. Multirobot Model Launch
 
-## [video tutourial and demo project](https://www.theconstructsim.com/zh-hans/ros-qa-130-how-to-launch-multiple-robots-in-gazebo-simulator/)
+## 2.1 Turtelbot
+### [video tutourial and demo project](https://www.theconstructsim.com/zh-hans/ros-qa-130-how-to-launch-multiple-robots-in-gazebo-simulator/)
 
-## manually launch each turtlebot node
+### manually launch each turtlebot node
 
    ```
    $ ROS_NAMESPACE=tb3_0 roslaunch turtlebot3_bringup turtlebot3_robot.launch multi_robot_name:="tb3_0" set_lidar_frame_id:="tb3_0/base_scan"
@@ -88,8 +89,8 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
    /tb3_0/turtlebot3_lds
    ```
 
-## auto launch each trutlebot node by robot_startup rospackage
-### make startrobot service
+### auto launch each trutlebot node by robot_startup rospackage
+#### make startrobot service
    1. create  or copy ros project `launch_robot` under `~/catkin_ws/src/`
 
      ```
@@ -155,7 +156,7 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
 
    5. sudo systemctl daemon-reload && sudo systemctl start startrobot`
 
-### make monitor service to reboot startrobot service if failed
+#### make monitor service to reboot startrobot service if failed
 
    1. create or copy [monitor scripts](monitor.sh)
 
@@ -170,12 +171,18 @@ refer to [section 3 How to update](https://discourse.ros.org/t/announcing-turtle
    sudo systemctl start monitor.service
    ```
 
-### monitor service ouput
+#### monitor service ouput
 ```
 sudo journalctl -e -u monitor.service
 ```
-## auto launch each rosbot node by robot_startup rospackage
-### make startrobot service
+### 2.2 auto launch each rosbot node by robot_startup rospackage
+#### install robot-upstart pakcage in Melodic
+```
+sudo apt-get install ros-melodic-robot-upstart
+```
+**if failed, consider to change the ros sources** as [ROS Melodic 版本安装+将ROS的源设置为国内的源](https://blog.csdn.net/qq_38649880/article/details/99563189)
+
+#### make startrobot service
    1. create  or copy ros project `launch_robot` under `~/ros_workspace/src/`
 
      ```
@@ -243,9 +250,9 @@ sudo journalctl -e -u monitor.service
 
    5. sudo systemctl daemon-reload && sudo systemctl start startrobot`
 
-#### launch rosbot
+##### launch rosbot
 
-#### launch slam
+##### launch slam
 ```
 roslaunch multi_rosbot_nav slam.launch
 #### slam.launch - slam rviz, teleop
@@ -255,7 +262,7 @@ roslaunch tele.launch
 ####slam_norva.launch - slam, no rviz, no teleop
 ```
 
-#### launch navigation
+##### launch navigation
 
 1. launch local model with map server
 ```
